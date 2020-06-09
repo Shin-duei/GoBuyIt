@@ -17,25 +17,25 @@ namespace GoBuyIt.BasicFunction
         /// </summary>
         /// <param name="CsvFilePath"></param>
         /// <param name=""></param>
-        public static T CsvTrans2Json<T>(string CsvFilePath, T jsonObject)
+        public static bool CsvTrans2Json<T>(string CsvFilePath, out List<T> jsonObject) where T : new()
         {
-            var csv = File.ReadAllText(@"C:\Users\Administrator\Downloads\order_2020_05_16_09_52_57.csv", System.Text.Encoding.GetEncoding(950));
+            jsonObject = new List<T>();
+
+            if (!System.IO.File.Exists(CsvFilePath))
+                return false;
+
+            var csv = File.ReadAllText(CsvFilePath, new System.Text.UTF8Encoding(true));
             //記得using ServiceStack啟用擴充方法
-            var data = csv.FromCsv<List<BaseTitle>>();
-            Console.WriteLine(JsonConvert.SerializeObject(data, Formatting.Indented));
-            Console.Read();
+            try
+            {
+                jsonObject = csv.FromCsv<List<T>>();
+            }
+            catch
+            {
+                return false;
+            }
 
-            return jsonObject;
+            return true;
         }
-        public static void CsvTrans2Jsontest()
-        {
-            var csv = File.ReadAllText(@"C:\Users\Administrator\Downloads\order_2020_05_16_09_52_57.csv", new System.Text.UTF8Encoding(true));
-            //記得using ServiceStack啟用擴充方法
-            var data = csv.FromCsv<List<BaseTitle>>();
-            Console.WriteLine(JsonConvert.SerializeObject(data, Formatting.Indented));
-            Console.Read();
-
-        }
-
     }
 }

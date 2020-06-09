@@ -266,14 +266,14 @@ namespace GoBuyIt.Model
         /// </summary>
         [DataMember(Name = "超商寄貨編號(拋單後取得)")]
         [JsonProperty(PropertyName = "超商寄貨編號(拋單後取得)")]
-        public int? PostNumber { set; get; }
+        public string PostNumber { set; get; }
 
         ///<summary>
         ///超商代號
         ///</summary>
         [DataMember(Name = "超商代號")]
         [JsonProperty(PropertyName = "超商代號")]
-        public int? ConvenienceStoreSerial { set; get; }
+        public string ConvenienceStoreSerial { set; get; }
 
         /// <summary>
         /// 顧客備註
@@ -330,7 +330,7 @@ namespace GoBuyIt.Model
         /// </summary>
         [DataMember(Name = "信用卡末四碼")]
         [JsonProperty(PropertyName = "信用卡末四碼")]
-        public int? CreditCardLastFourNumber { set; get; }
+        public string CreditCardLastFourNumber { set; get; }
 
         /// <summary>
         /// 託運單號
@@ -344,7 +344,7 @@ namespace GoBuyIt.Model
         /// </summary>
         [DataMember(Name = "匯款末五碼")]
         [JsonProperty(PropertyName = "匯款末五碼")]
-        public int? MoneyTransferLastFiveNumber { set; get; }
+        public string MoneyTransferLastFiveNumber { set; get; }
 
         /// <summary>
         /// 匯款時間

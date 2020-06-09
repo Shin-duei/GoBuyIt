@@ -5,6 +5,9 @@ using GoBuyIt.BasicFunction;
 using System.IO;
 using System.Diagnostics;
 using System;
+using GoBuyIt.Model;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace GoBuyIt
 {
@@ -19,12 +22,13 @@ namespace GoBuyIt
 
         string DataBasePath;
         DataTable dt = new DataTable();
+
         /// <summary>
         /// main
         /// </summary>
         public MainWindow()
         {
-            FileProcessing.CsvTrans2Jsontest();
+
             InitializeComponent();
 #if (DEBUG)
             //string DataBasePath= Path.Combine(PathFunction.GetExecuteLevelPath(System.Environment.CurrentDirectory, 2), @"DataBase\test1.db");
@@ -127,14 +131,14 @@ namespace GoBuyIt
             物流狀態                                      STRING,
             物流備註                                      STRING,
             電話國碼                                      STRING,
-            顧客電話                                      INT,
+            顧客電話                                      STRING,
             顧客性別                                      STRING,
             顧客信箱                                      STRING,
             運送地址                                      STRING,
             方便收貨時間                                  STRING,
             運送超商                                      STRING,
-            [超商寄貨編號(拋單後取得)]   				     INT,
-            超商代號                                      INT,
+            [超商寄貨編號(拋單後取得)]   				     STRING,
+            超商代號                                      STRING,
             顧客備註                                      STRING,
             商家備註                                      STRING,
             物流追蹤                                      STRING,
@@ -142,9 +146,9 @@ namespace GoBuyIt
             IP                                            STRING,
             FB名稱                                        STRING,
             標籤                                          STRING,
-            信用卡末四碼                                  INT,
+            信用卡末四碼                                  STRING,
             託運單號                                      STRING,
-            匯款末五碼                                    INT,
+            匯款末五碼                                    STRING,
             匯款時間                                      STRING,
             顧客留言                                      STRING
              );";
@@ -184,6 +188,30 @@ namespace GoBuyIt
             }
             if (SQLite_Connection.State == ConnectionState.Open)
                 SQLite_Connection.Close();
+        }
+
+        private void ButtonLoadOrder(object sender, RoutedEventArgs e)
+        {
+            //string OrderListPath = @"Order/order_2020_05_16_09_52_57.csv";
+           // string MemberListPath = @"MemberList/方氏果乾會員.csv";
+            string OrderListPath = @"C:\Users\Administrator\Downloads\order_2020_05_16_09_52_57.csv";
+            string MemberListPath = @"C:\Users\Administrator\Downloads\方氏果乾會員.csv";
+            FileProcessing.CsvTrans2Json<BaseTitle>(OrderListPath, out List<BaseTitle> OrderList);
+            FileProcessing.CsvTrans2Json<MemberListTitle>(MemberListPath, out List<MemberListTitle> MemberList);
+
+            foreach(var Order in OrderList)
+            {
+                MemberList.ForEach(s =>
+                {
+                    if (Order.CustomerName == s.RealName && Order.CustomerEmail == s.Email)
+                        Order.Membership = "V";
+                });
+            }
+
+            var MemberInOrder=OrderList.FindAll(s=>s.Membership== "V");
+
+
+            dataGrid.ItemsSource = OrderList;
         }
     }
 }
