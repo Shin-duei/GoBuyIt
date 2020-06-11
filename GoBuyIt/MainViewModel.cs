@@ -1,57 +1,37 @@
-﻿using System.Windows;
-using System.Data.SQLite;
-using System.Data;
-using GoBuyIt.BasicFunction;
-using System.IO;
-using System.Diagnostics;
-using System;
+﻿using GoBuyIt.BasicFunction;
 using GoBuyIt.Model;
+using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Data;
+using System.Data.SQLite;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace GoBuyIt
 {
-    /// <summary>
-    /// MainWindow.xaml 的互動邏輯
-    /// </summary>
-    public partial class MainWindow : Window
+    public class MainViewModel : ViewModelBase
     {
+
         SQLiteConnection SQLite_Connection;
         SQLiteCommand SQLite_Command;
         SQLiteDataReader SQLite_Reader;
 
-        string DataBasePath;
+        string DataBasePath = Path.Combine(PathFunction.GetExecuteLevelPath(System.Environment.CurrentDirectory, 2), @"DataBase\GoBuyIt.db");
         DataTable dt = new DataTable();
-
-        /// <summary>
-        /// main
-        /// </summary>
-        public MainWindow()
-        {
-
-            InitializeComponent();
-#if (DEBUG)
-            //string DataBasePath= Path.Combine(PathFunction.GetExecuteLevelPath(System.Environment.CurrentDirectory, 2), @"DataBase\test1.db");
-            DataBasePath = Path.Combine(PathFunction.GetExecuteLevelPath(System.Environment.CurrentDirectory, 2), @"DataBase\GoBuyIt.db");
-#endif       
-            if (File.Exists(DataBasePath))
-            {
-                SQLite_Connection = new SQLiteConnection($"Data Source={DataBasePath}");
-                SQLite_Connection.Open();
-            }
-
-        }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-             if(SQLite_Connection.State == ConnectionState.Closed)
-                    SQLite_Connection.Open();
+            if (SQLite_Connection.State == ConnectionState.Closed)
+                SQLite_Connection.Open();
 
             SQLite_Command = SQLite_Connection.CreateCommand();
             SQLite_Command.CommandText = "Select * From GoBuyItMember";
             SQLite_Reader = SQLite_Command.ExecuteReader();
             dt.Load(SQLite_Reader);
-            dataGrid.ItemsSource = dt.DefaultView;
+            // dataGrid.ItemsSource = dt.DefaultView;
 
         }
 
@@ -63,7 +43,7 @@ namespace GoBuyIt
 
             dt.Clear();
             dt.Load(SQLite_Reader);
-            dataGrid.ItemsSource = dt.DefaultView;
+            // dataGrid.ItemsSource = dt.DefaultView;
         }
         /// <summary>
         /// 建立資料庫按鈕
@@ -72,8 +52,8 @@ namespace GoBuyIt
         /// <param name="e"></param>
         private void ButtonCreateDataBase(object sender, RoutedEventArgs e)
         {
-            if(!File.Exists(DataBasePath))
-                SQLite_Connection=CreateDataBase(DataBasePath);
+            if (!File.Exists(DataBasePath))
+                SQLite_Connection = CreateDataBase(DataBasePath);
         }
         /// <summary>
         /// 建立資料庫
@@ -87,7 +67,7 @@ namespace GoBuyIt
             {
                 var _SQLite_Connection = new SQLiteConnection(CreateDataBasePath);
 
-                if (_SQLite_Connection.State == ConnectionState.Open) 
+                if (_SQLite_Connection.State == ConnectionState.Open)
                     _SQLite_Connection.Close();
 
                 _SQLite_Connection.Open();
@@ -158,13 +138,13 @@ namespace GoBuyIt
                 if (SQLite_Connection.State == ConnectionState.Closed)
                     SQLite_Connection.Open();
                 //先確認資料表存在
-                string cmdCheckTable = "SELECT COUNT(*) FROM sqlite_master where type='table' and name='GoBuyItMember'";               
-                SQLite_Command=new SQLiteCommand(cmdCheckTable, SQLite_Connection);
+                string cmdCheckTable = "SELECT COUNT(*) FROM sqlite_master where type='table' and name='GoBuyItMember'";
+                SQLite_Command = new SQLiteCommand(cmdCheckTable, SQLite_Connection);
                 //如果不存在就建立
-                if(Convert.ToInt32(SQLite_Command.ExecuteScalar())==0)
+                if (Convert.ToInt32(SQLite_Command.ExecuteScalar()) == 0)
                     CreateDataTable(DataBasePath, ComdCreateTableTitle);
             }
-               
+
         }
         /// <summary>
         /// 建立資料表
@@ -193,13 +173,13 @@ namespace GoBuyIt
         private void ButtonLoadOrder(object sender, RoutedEventArgs e)
         {
             //string OrderListPath = @"Order/order_2020_05_16_09_52_57.csv";
-           // string MemberListPath = @"MemberList/方氏果乾會員.csv";
+            // string MemberListPath = @"MemberList/方氏果乾會員.csv";
             string OrderListPath = @"C:\Users\Administrator\Downloads\order_2020_05_16_09_52_57.csv";
             string MemberListPath = @"C:\Users\Administrator\Downloads\方氏果乾會員.csv";
             FileProcessing.CsvTrans2Json<BaseTitle>(OrderListPath, out List<BaseTitle> OrderList);
             FileProcessing.CsvTrans2Json<MemberListTitle>(MemberListPath, out List<MemberListTitle> MemberList);
 
-            foreach(var Order in OrderList)
+            foreach (var Order in OrderList)
             {
                 MemberList.ForEach(s =>
                 {
@@ -208,10 +188,7 @@ namespace GoBuyIt
                 });
             }
 
-            var MemberInOrder=OrderList.FindAll(s=>s.Membership== "V");
-
-
-            dataGrid.ItemsSource = OrderList;
+            var MemberInOrder = OrderList.FindAll(s => s.Membership == "V");
         }
     }
 }
