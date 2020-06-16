@@ -111,7 +111,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Program.cs" />
-    <Compile Include="ViewModelBase.cs" />
+    <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="ViewModel\OrderView.cs" />
     <Page Include="GoBuyItLogistics.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
