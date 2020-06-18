@@ -4,12 +4,36 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:GoBuyIt"
-        mc:Ignorable="d"
+        xmlns:local="clr-namespace:GoBuyIt" xmlns:ie="http://schemas.microsoft.com/xaml/behaviors"
+                  mc:Ignorable="d"
         Title="SQliteTest" Height="459.16" Width="800">
+    <Window.DataContext>
+        <local:MainViewModel />
+    </Window.DataContext>
     <Grid>
-        <DataGrid x:Name="dataGrid" Height="190" Margin="0,0,-0.4,0" ItemsSource="{Binding OrderViewList}"/>
-        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="216,47,0,0" VerticalAlignment="Top" Width="75"/>
+        <DataGrid
+            x:Name="dataGrid" 
+                  Height="190" 
+                  Margin="0,0,-0.4,0" 
+                  ItemsSource="{Binding OrderViewList}"
+            >
+            <DataGrid.Columns>
+                <DataGridTextColumn   Binding="{Binding OwnerNumber}" Header="廠商編號" />
+            <DataGridTextColumn  Binding="{Binding OwnerName}" Header="廠商名稱" />
+            </DataGrid.Columns>
+            </DataGrid>
+        <Button
+            x:Name="button"
+            Content="Button" 
+            HorizontalAlignment="Left" 
+            Margin="216,47,0,0" 
+            VerticalAlignment="Top"
+            Width="75">
+            <ie:Interaction.Triggers>
+            <ie:EventTrigger EventName="Click">
+                <ie:InvokeCommandAction Command="{Binding ExecuteClickCommand}" />
+            </ie:EventTrigger>
+        </ie:Interaction.Triggers>
+        </Button>
     </Grid>
-
 </mah:MetroWindow>

@@ -111,6 +111,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Program.cs" />
+    <Compile Include="ViewModel\DelegateCommand.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="ViewModel\OrderView.cs" />
     <Page Include="GoBuyItLogistics.xaml">
