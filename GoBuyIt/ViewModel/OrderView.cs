@@ -16,26 +16,12 @@ namespace GoBuyIt.ViewModel
                     public OrderView(BaseTitle orderList)
                     {
                               OrderList = orderList;
-                              OwnerNumber = OrderList.OrderNumber;
+
                               OwnerName = OrderList.OwnerName;
                               OrderNumber = OrderList.OrderNumber;
                               DateCreate = OrderList.DateCreate;
-                    }
-
-                    private string ownerNumber;
-                    /// <summary>
-                    /// 廠商編號
-                    /// </summary>
-                    [DataMember(Name = "廠商編號")]
-                    [JsonProperty(PropertyName = "廠商編號")]
-                    public string OwnerNumber
-                    {
-                              get { return ownerNumber; }
-                              set
-                              {
-                                        ownerNumber = value;
-                                        OnPropertyChanged();
-                              }
+                              CustomerName = OrderList.CustomerName;
+                              Membership = OrderList.Membership;
                     }
 
                     private string ownerName;
@@ -86,5 +72,38 @@ namespace GoBuyIt.ViewModel
                               }
                     }
 
+                    private string customerName;
+                    /// <summary>
+                    /// 顧客
+                    /// 顧客姓名
+                    /// </summary>
+                    [DataMember(Name = "顧客")]
+                    [JsonProperty(PropertyName = "顧客")]
+                    public string CustomerName
+                    {
+                              get { return customerName; }
+                              set
+                              {
+                                        customerName = value;
+                                        OnPropertyChanged();
+                              }
+                    }
+
+                    private string membership;
+                    /// <summary>
+                    /// 會員
+                    /// 會員資格
+                    /// </summary>
+                    [DataMember(Name = "會員")]
+                    [JsonProperty(PropertyName = "會員")]
+                    public string Membership
+                    {
+                              get { return membership; }
+                              set
+                              {
+                                        membership = value;
+                                        OnPropertyChanged();
+                              }
+                    }
           }
 }

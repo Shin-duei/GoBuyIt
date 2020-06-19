@@ -1,39 +1,81 @@
-﻿<mah:MetroWindow  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls" 
-        x:Class="GoBuyIt.GoBuyItLogistics"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:GoBuyIt" xmlns:ie="http://schemas.microsoft.com/xaml/behaviors"
-                  mc:Ignorable="d"
-        Title="SQliteTest" Height="459.16" Width="800">
+﻿<mah:MetroWindow
+    x:Class="GoBuyIt.GoBuyItLogistics"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ie="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:GoBuyIt"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="SQliteTest"
+    Width="1000"
+    Height="600"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--  加入 MahApps 相關資源  -->
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+
+
+                <!--  設定主題背景色  -->
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.light.xaml" />
+                <!--  套用基本控制項樣式  -->
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <!--  設定主色  -->
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.BlueGrey.xaml" />
+                <!--  設定輔色  -->
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Green.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <Window.DataContext>
         <local:MainViewModel />
     </Window.DataContext>
-    <Grid>
-        <DataGrid
-            x:Name="dataGrid" 
-                  Height="190" 
-                  Margin="0,0,-0.4,0" 
-                  ItemsSource="{Binding OrderViewList}"
-            >
-            <DataGrid.Columns>
-                <DataGridTextColumn   Binding="{Binding OwnerNumber}" Header="廠商編號" />
-            <DataGridTextColumn  Binding="{Binding OwnerName}" Header="廠商名稱" />
-            </DataGrid.Columns>
+    <Grid Margin="2,2,2,2">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="996" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100" />
+            <RowDefinition Height="500" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="1"  Grid.Column="0" Margin="0,10,0,35" >
+            <DataGrid
+                x:Name="dataGrid"
+                Height="440" 
+                VerticalAlignment="Top"
+                AutoGenerateColumns="False"
+                ItemsSource="{Binding OrderViewList}" Margin="0,1,1,1">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding OwnerName}" Header="廠商名稱" />
+                    <DataGridTextColumn Binding="{Binding OrderNumber}" Header="訂單編號" />
+                    <DataGridTextColumn Binding="{Binding DateCreate}" Header="建立日期" />
+                    <DataGridTextColumn Binding="{Binding CustomerName}" Header="顧客姓名" />
+                    <DataGridTextColumn Binding="{Binding Membership}" Header="會員" />
+                </DataGrid.Columns>
             </DataGrid>
-        <Button
+        </StackPanel>
+        <Grid Grid.Row="0"  Grid.Column="0" Margin="0,0,0,198" Grid.RowSpan="2" >
+            <CheckBox x:Name="checkBoxMemberShip" Content="會員" HorizontalAlignment="Left" Margin="41,65,0,0" VerticalAlignment="Top"/>
+            <Button
             x:Name="button"
-            Content="Button" 
-            HorizontalAlignment="Left" 
-            Margin="216,47,0,0" 
+            Width="113"
+            Margin="228,60,0,0"
+            HorizontalAlignment="Left"
             VerticalAlignment="Top"
-            Width="75">
-            <ie:Interaction.Triggers>
-            <ie:EventTrigger EventName="Click">
-                <ie:InvokeCommandAction Command="{Binding ExecuteClickCommand}" />
-            </ie:EventTrigger>
-        </ie:Interaction.Triggers>
-        </Button>
+            Content="搜尋" Height="29">
+                <ie:Interaction.Triggers>
+                    <ie:EventTrigger EventName="Click">
+                        <ie:InvokeCommandAction Command="{Binding ExecuteClickCommand}" />
+                    </ie:EventTrigger>
+                </ie:Interaction.Triggers>
+            </Button>
+            <Label x:Name="labelOrderNo" Content="訂單編號: " HorizontalAlignment="Left" Margin="41,26,0,0" VerticalAlignment="Top"/>
+            <Label x:Name="labelCustName" Content="顧客姓名: " HorizontalAlignment="Left" Margin="228,26,0,0" VerticalAlignment="Top"/>
+            <TextBlock x:Name="textBlockOrderNo" HorizontalAlignment="Left" Margin="102,30,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="103"/>
+            <TextBlock x:Name="textBlockCustName" HorizontalAlignment="Left" Margin="290,30,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="98"/>
+        </Grid>
     </Grid>
 </mah:MetroWindow>
