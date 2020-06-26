@@ -1,6 +1,7 @@
 ﻿using GoBuyIt.BasicFunction;
 using GoBuyIt.Model;
 using GoBuyIt.ViewModel;
+using ServiceStack;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,8 +22,11 @@ namespace GoBuyIt
 	{
 		public MainViewModel()
 		{
-			
+
 		}
+		private List<BaseTitle> loadOrderViewList = new List<BaseTitle>();
+		private string customerName;
+
 		private ObservableCollection<OrderView> orderViewList = new ObservableCollection<OrderView>();
 		public ObservableCollection<OrderView> OrderViewList
 		{
@@ -185,26 +189,6 @@ namespace GoBuyIt
 				SQLite_Connection.Close();
 		}
 
-		private void ButtonLoadOrder(object sender, RoutedEventArgs e)
-		{
-			//string OrderListPath = @"Order/order_2020_05_16_09_52_57.csv";
-			// string MemberListPath = @"MemberList/方氏果乾會員.csv";
-			string OrderListPath = @"C:\Users\Administrator\Downloads\order_2020_05_16_09_52_57.csv";
-			string MemberListPath = @"C:\Users\Administrator\Downloads\方氏果乾會員.csv";
-			FileProcessing.CsvTrans2Json<BaseTitle>(OrderListPath, out List<BaseTitle> OrderList);
-			FileProcessing.CsvTrans2Json<MemberListTitle>(MemberListPath, out List<MemberListTitle> MemberList);
-
-			foreach (var Order in OrderList)
-			{
-				MemberList.ForEach(s =>
-				{
-					if (Order.CustomerName == s.RealName && Order.CustomerEmail == s.Email)
-						Order.Membership = "V";
-				});
-			}
-
-			var MemberInOrder = OrderList.FindAll(s => s.Membership == "V");
-		}
 		public ICommand ExecuteClickCommand
 		{
 			get { return new DelegateCommand(ImportOderClick, CanCommand); }
@@ -216,12 +200,12 @@ namespace GoBuyIt
 			// string MemberListPath = @"MemberList/方氏果乾會員.csv";
 			string OrderListPath = @"C:\Users\Administrator\Downloads\order_2020_05_16_09_52_57.csv";
 			string MemberListPath = @"C:\Users\Administrator\Downloads\mm.csv";
-			FileProcessing.CsvTrans2Json<BaseTitle>(OrderListPath, out List<BaseTitle> _OrderViewList);
+			FileProcessing.CsvTrans2Json<BaseTitle>(OrderListPath, out  loadOrderViewList);
 			FileProcessing.CsvTrans2Json<MemberListTitle>(MemberListPath, out List<MemberListTitle> MemberList);
 
 			OrderViewList.Clear();
 
-			foreach (var Order in _OrderViewList)
+			foreach (var Order in loadOrderViewList)
 			{
 				MemberList.ForEach(s =>
 				{
@@ -230,15 +214,39 @@ namespace GoBuyIt
 				});
 			}
 
-			var MemberInOrder = _OrderViewList.FindAll(s => s.Membership == "V");
-
-			_OrderViewList.ForEach(s =>
+			loadOrderViewList.ForEach(s =>
 			{
 				OrderViewList.Add(new OrderView(s));
 			}
 			);
 		}
 
+
+		public ICommand SearchClickCommand
+		{
+			get { return new DelegateCommand(SearchClick, CanCommand); }
+		}
+
+		private void SearchClick()
+		{
+			OrderViewList.Clear();
+			loadOrderViewList.ForEach(s =>
+			{
+				if(s.CustomerName==this.customerName)
+					OrderViewList.Add(new OrderView(s));
+			}
+);
+		}
+
+		public ICommand TextChangedEvent
+		{
+			get { return new RelayCommand(TextChanged, RelayCommand.CanExecuteMethod); }
+		}
+		private void TextChanged(object parameter)
+		{
+			TextBox tb = parameter as TextBox;
+			this.customerName = tb.Text;
+		}
 		private bool CanCommand()
 		{
 			return true;

@@ -22,6 +22,11 @@ namespace GoBuyIt.ViewModel
                               DateCreate = OrderList.DateCreate;
                               CustomerName = OrderList.CustomerName;
                               Membership = OrderList.Membership;
+                              ProductSerial=OrderList.ProductSerial;
+                              ProductName=OrderList.ProductName;
+                              productQuantity= OrderList.ProductQuantity;
+
+
                     }
 
                     private string ownerName;
@@ -102,6 +107,57 @@ namespace GoBuyIt.ViewModel
                               set
                               {
                                         membership = value;
+                                        OnPropertyChanged();
+                              }
+                    }
+
+                    private string productSerial;
+                    /// <summary>
+                    /// 產品SKU
+                    /// 產品SKU
+                    /// </summary>
+                    [DataMember(Name = "產品SKU")]
+                    [JsonProperty(PropertyName = "產品SKU")]
+                    public string ProductSerial
+                    {
+                              get { return productSerial; }
+                              set
+                              {
+                                        productSerial = value;
+                                        OnPropertyChanged();
+                              }
+                    }
+
+                    private string productName;
+                    /// <summary>
+                    /// 產品名稱
+                    /// 產品名稱
+                    /// </summary>
+                    [DataMember(Name = "產品名稱")]
+                    [JsonProperty(PropertyName = "產品名稱")]
+                    public string ProductName
+                    {
+                              get { return productName; }
+                              set
+                              {
+                                        productName = value;
+                                        OnPropertyChanged();
+                              }
+                    }
+
+                    private int? productQuantity;
+                    /// <summary>
+                    /// 產品數量
+                    /// 產品數量
+                    /// </summary>
+                    [DataMember(Name = "產品數量")]
+                    [JsonProperty(PropertyName = "產品數量")]
+                    public int? ProductQuantity
+                    {
+                              get { return productQuantity; }
+                              set
+                              {
+                                        productQuantity = value;
                                         OnPropertyChanged();
                               }
                     }
