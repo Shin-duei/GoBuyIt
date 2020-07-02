@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ie="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:ie="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:local="clr-namespace:GoBuyIt"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
@@ -17,8 +17,11 @@
                 <!--  加入 MahApps 相關資源  -->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
                 <!--  設定主題背景色  -->
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.light.xaml" />
+
                 <!--  套用基本控制項樣式  -->
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
                 <!--  設定主色  -->
@@ -26,127 +29,169 @@
                 <!--  設定輔色  -->
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Green.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <!--  加入筆刷資源  -->
+            <SolidColorBrush x:Key="HighlightBrush" Color="{DynamicResource Primary700}" />
+            <!--  SolidColorBrush x:Key="AccentColorBrush" Color="{DynamicResource Primary500}" /  -->
+            <SolidColorBrush x:Key="AccentColorBrush2" Color="{DynamicResource Primary400}" />
+            <SolidColorBrush x:Key="AccentColorBrush3" Color="{DynamicResource Primary300}" />
+            <SolidColorBrush x:Key="AccentColorBrush4" Color="{DynamicResource Primary200}" />
+            <SolidColorBrush x:Key="WindowTitleColorBrush" Color="{DynamicResource Primary700}" />
+            <SolidColorBrush x:Key="AccentSelectedColorBrush" Color="{DynamicResource Primary500Foreground}" />
+            <LinearGradientBrush x:Key="ProgressBrush" StartPoint="1.002,0.5" EndPoint="0.001,0.5">
+                <GradientStop Offset="0" Color="{DynamicResource Primary700}" />
+                <GradientStop Offset="1" Color="{DynamicResource Primary300}" />
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="CheckmarkFill" Color="{DynamicResource Primary500}" />
+            <SolidColorBrush x:Key="RightArrowFill" Color="{DynamicResource Primary500}" />
+            <SolidColorBrush x:Key="IdealForegroundColorBrush" Color="{DynamicResource Primary500Foreground}" />
+            <SolidColorBrush
+                x:Key="IdealForegroundDisabledBrush"
+                Opacity="0.4"
+                Color="{DynamicResource Primary500}" />
+            <Style TargetType="Label">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+            <Style x:Key="checkboxStyle" TargetType="CheckBox">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="Foreground" Value="{DynamicResource HighlightBrush}" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="Margin" Value="20,0,0,0" />
+            </Style>
+            <Style TargetType="Expander">
+                <Setter Property="Margin" Value="0,15,0,0" />
+                <Setter Property="FontSize" Value="16" />
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
     <Window.DataContext>
         <local:MainViewModel />
     </Window.DataContext>
-    <Grid Margin="2,2,2,2">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="166" />
-            <ColumnDefinition Width="166" />
-            <ColumnDefinition Width="166" />
-            <ColumnDefinition Width="166" />
-            <ColumnDefinition Width="166" />
-            <ColumnDefinition Width="166" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="50" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="500" />
-        </Grid.RowDefinitions>
-        <StackPanel
-            Grid.Row="2"
-            Grid.Column="0"
-            Grid.ColumnSpan="6"
-            Margin="0,0,0.2,34"
-            Background="white">
-            <DataGrid
-                x:Name="dataGrid"
-                Height="452"
-                Margin="0,0,9.8,0"
-                VerticalAlignment="Top"
-                AutoGenerateColumns="False"
-                ItemsSource="{Binding OrderViewList}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding OwnerName}" Header="廠商名稱" />
-                    <DataGridTextColumn Binding="{Binding OrderNumber}" Header="訂單編號" />
-                    <DataGridTextColumn Binding="{Binding DateCreate}" Header="建立日期" />
-                    <DataGridTextColumn Binding="{Binding CustomerName}" Header="顧客姓名" />
-                    <DataGridTextColumn Binding="{Binding Membership}" Header="會員" />
-                    <DataGridTextColumn Binding="{Binding ProductSerial}" Header="產品SKU" />
-                    <DataGridTextColumn Binding="{Binding ProductName}" Header="產品名稱" />
-                    <DataGridTextColumn Binding="{Binding ProductQuantity}" Header="產品數量" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </StackPanel>
-        <StackPanel
-            Grid.Row="0"
-            Grid.RowSpan="1"
-            Grid.Column="0"
-            Grid.ColumnSpan="6"
-            Background="white"
-            Orientation="Horizontal">
-            <Label
-                x:Name="labelOrderNo"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Content="訂單編號: " />
-            <TextBox
-                x:Name="TextOrderNo"
-                Width="120"
-                Height="23"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Text="TextBox"
-                TextWrapping="Wrap" />
-            <Label
-                x:Name="labelCustName"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Content="顧客姓名: " />
-            <TextBox
-                x:Name="TextCustomerName"
-                Width="120"
-                Height="23"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Text="TextBox"
-                TextWrapping="Wrap">
-                <ie:Interaction.Triggers>
-                    <ie:EventTrigger EventName="TextChanged">
-                        <ie:InvokeCommandAction Command="{Binding TextChangedEvent}" CommandParameter="{Binding ElementName=TextCustomerName}" />
-                    </ie:EventTrigger>
-                </ie:Interaction.Triggers>
-            </TextBox>
-            <CheckBox
-                x:Name="checkBoxMemberShip"
-                Width="51"
-                Height="23"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Content="會員" />
-        </StackPanel>
-        <StackPanel
-            Grid.Row="1"
-            Grid.Column="0"
-            Grid.ColumnSpan="6"
-            Background="white"
-            Orientation="Horizontal">
-            <Button
-                x:Name="buttonSearch"
-                Width="113"
-                Height="30"
-                VerticalAlignment="Top"
-                Content="搜尋">
-                <ie:Interaction.Triggers>
-                    <ie:EventTrigger EventName="Click">
-                        <ie:InvokeCommandAction Command="{Binding SearchClickCommand}" />
-                    </ie:EventTrigger>
-                </ie:Interaction.Triggers>
-            </Button>
-            <Button
-                x:Name="buttonLoad"
-                Width="113"
-                Height="Auto"
-                Margin="20,0,0,19.6"
-                Content="載入訂單">
-                <ie:Interaction.Triggers>
-                    <ie:EventTrigger EventName="Click">
-                        <ie:InvokeCommandAction Command="{Binding ExecuteClickCommand}" />
-                    </ie:EventTrigger>
-                </ie:Interaction.Triggers>
-            </Button>
-        </StackPanel>
-    </Grid>
+    <Viewbox x:Name="RootViewbox" Stretch="Fill">
+        <Grid x:Name="AppTitleBar" Background="White">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="166" />
+                <ColumnDefinition Width="166" />
+                <ColumnDefinition Width="166" />
+                <ColumnDefinition Width="166" />
+                <ColumnDefinition Width="166" />
+                <ColumnDefinition Width="166" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="50" />
+                <RowDefinition Height="500" />
+            </Grid.RowDefinitions>
+            <StackPanel
+                Grid.Row="2"
+                Grid.Column="0"
+                Grid.ColumnSpan="6"
+                Margin="0,0,0.2,10"
+                Background="white">
+                <DataGrid
+                    x:Name="dataGrid"
+                    Height="492"
+                    Margin="0,0,9.8,0"
+                    VerticalAlignment="Top"
+                    AutoGenerateColumns="False"
+                    ItemsSource="{Binding OrderViewList}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding OwnerName}" Header="廠商名稱" />
+                        <DataGridTextColumn Binding="{Binding OrderNumber}" Header="訂單編號" />
+                        <DataGridTextColumn Binding="{Binding DateCreate}" Header="建立日期" />
+                        <DataGridTextColumn Binding="{Binding CustomerName}" Header="顧客姓名" />
+                        <DataGridTextColumn Binding="{Binding Membership}" Header="會員" />
+                        <DataGridTextColumn Binding="{Binding ProductSerial}" Header="產品SKU" />
+                        <DataGridTextColumn Binding="{Binding ProductName}" Header="產品名稱" />
+                        <DataGridTextColumn Binding="{Binding ProductQuantity}" Header="產品數量" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+            <StackPanel
+                Grid.Row="0"
+                Grid.RowSpan="1"
+                Grid.Column="0"
+                Grid.ColumnSpan="6"
+                Background="white"
+                Orientation="Horizontal">
+                <Label
+                    x:Name="labelOrderNo"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Content="訂單編號: " />
+                <TextBox
+                    x:Name="TextOrderNo"
+                    Width="120"
+                    Height="23"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Text=""
+                    TextWrapping="Wrap" />
+                <Label
+                    x:Name="labelCustName"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Content="顧客姓名: " />
+                <TextBox
+                    x:Name="TextCustomerName"
+                    Width="120"
+                    Height="23"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Text=""
+                    TextWrapping="Wrap">
+                    <ie:Interaction.Triggers>
+                        <ie:EventTrigger EventName="TextChanged">
+                            <ie:InvokeCommandAction Command="{Binding TextChangedEvent}" CommandParameter="{Binding ElementName=TextCustomerName}" />
+                        </ie:EventTrigger>
+                    </ie:Interaction.Triggers>
+                </TextBox>
+                <CheckBox
+                    x:Name="checkBoxMemberShip"
+                    Width="51"
+                    Height="23"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Content="會員">
+                    <ie:Interaction.Triggers>
+                        <ie:EventTrigger EventName="Click">
+                            <ie:InvokeCommandAction Command="{Binding CheckBoxEvent}" CommandParameter="{Binding ElementName=checkBoxMemberShip}" />
+                        </ie:EventTrigger>
+                    </ie:Interaction.Triggers>
+                </CheckBox>
+            </StackPanel>
+            <StackPanel
+                Grid.Row="1"
+                Grid.Column="0"
+                Grid.ColumnSpan="6"
+                Background="white"
+                Orientation="Horizontal">
+                <Button
+                    x:Name="buttonSearch"
+                    Width="113"
+                    Height="30"
+                    Margin="10,0,0,0"
+                    VerticalAlignment="Top"
+                    Content="搜尋">
+                    <ie:Interaction.Triggers>
+                        <ie:EventTrigger EventName="Click">
+                            <ie:InvokeCommandAction Command="{Binding SearchClickCommand}" />
+                        </ie:EventTrigger>
+                    </ie:Interaction.Triggers>
+                </Button>
+                <Button
+                    x:Name="buttonLoad"
+                    Width="113"
+                    Height="Auto"
+                    Margin="20,0,0,19.6"
+                    Content="載入訂單">
+                    <ie:Interaction.Triggers>
+                        <ie:EventTrigger EventName="Click">
+                            <ie:InvokeCommandAction Command="{Binding ExecuteClickCommand}" />
+                        </ie:EventTrigger>
+                    </ie:Interaction.Triggers>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Viewbox>
 </metro:MetroWindow>

@@ -24,8 +24,13 @@ namespace GoBuyIt
 		{
 
 		}
+		//載入的訂單
 		private List<BaseTitle> loadOrderViewList = new List<BaseTitle>();
+		//輸入的顧客姓名
 		private string customerName;
+		//是否為會員
+		private bool membership;
+
 
 		private ObservableCollection<OrderView> orderViewList = new ObservableCollection<OrderView>();
 		public ObservableCollection<OrderView> OrderViewList
@@ -200,7 +205,7 @@ namespace GoBuyIt
 			// string MemberListPath = @"MemberList/方氏果乾會員.csv";
 			string OrderListPath = @"C:\Users\Administrator\Downloads\order_2020_05_16_09_52_57.csv";
 			string MemberListPath = @"C:\Users\Administrator\Downloads\mm.csv";
-			FileProcessing.CsvTrans2Json<BaseTitle>(OrderListPath, out  loadOrderViewList);
+			FileProcessing.CsvTrans2Json<BaseTitle>(OrderListPath, out loadOrderViewList);
 			FileProcessing.CsvTrans2Json<MemberListTitle>(MemberListPath, out List<MemberListTitle> MemberList);
 
 			OrderViewList.Clear();
@@ -230,14 +235,21 @@ namespace GoBuyIt
 		private void SearchClick()
 		{
 			OrderViewList.Clear();
-			loadOrderViewList.ForEach(s =>
-			{
-				if(s.CustomerName==this.customerName)
-					OrderViewList.Add(new OrderView(s));
-			}
-);
-		}
 
+			if (this.membership)
+			{
+				loadOrderViewList.ForEach(s =>
+				{
+					//if(s.CustomerName==this.customerName)
+					if (s.Membership == "V")
+						OrderViewList.Add(new OrderView(s));
+				}
+				);
+			}
+			else
+				loadOrderViewList.ForEach(s => { OrderViewList.Add(new OrderView(s)); });
+		
+		}
 		public ICommand TextChangedEvent
 		{
 			get { return new RelayCommand(TextChanged, RelayCommand.CanExecuteMethod); }
@@ -246,6 +258,20 @@ namespace GoBuyIt
 		{
 			TextBox tb = parameter as TextBox;
 			this.customerName = tb.Text;
+		}
+
+		public ICommand CheckBoxEvent
+		{
+			get { return new RelayCommand(CheckBoxChanged, RelayCommand.CanExecuteMethod); }
+		}
+		private void CheckBoxChanged(object parameter)
+		{
+			CheckBox cb = parameter as CheckBox;
+			if (cb.IsChecked == true)
+				this.membership = true;
+			else
+				this.membership = false;
+
 		}
 		private bool CanCommand()
 		{
