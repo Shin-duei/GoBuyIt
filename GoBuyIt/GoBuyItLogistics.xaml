@@ -191,6 +191,18 @@
                         </ie:EventTrigger>
                     </ie:Interaction.Triggers>
                 </Button>
+                <Button
+                    x:Name="button"
+                    Width="113"
+                    Height="Auto"
+                    Margin="20,0,0,19.6"
+                    Content="匯出PDF">
+                    <ie:Interaction.Triggers>
+                        <ie:EventTrigger EventName="Click">
+                            <ie:InvokeCommandAction Command="{Binding ExportPDFClickCommand}" />
+                        </ie:EventTrigger>
+                    </ie:Interaction.Triggers>
+                </Button>
             </StackPanel>
         </Grid>
     </Viewbox>

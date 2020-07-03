@@ -1,24 +1,20 @@
 ﻿using GoBuyIt.BasicFunction;
 using GoBuyIt.Model;
 using GoBuyIt.ViewModel;
-using ServiceStack;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace GoBuyIt
 {
-	public class MainViewModel : ViewModelBase
+    public class MainViewModel : ViewModelBase
 	{
 		public MainViewModel()
 		{
@@ -203,8 +199,8 @@ namespace GoBuyIt
 		{
 			//string OrderListPath = @"Order/order_2020_05_16_09_52_57.csv";
 			// string MemberListPath = @"MemberList/方氏果乾會員.csv";
-			string OrderListPath = @"C:\Users\Administrator\Downloads\order_2020_05_16_09_52_57.csv";
-			string MemberListPath = @"C:\Users\Administrator\Downloads\mm.csv";
+			string OrderListPath = @"D:\C#\DummyFile\order_2020_05_16_09_52_57.csv";
+			string MemberListPath = @"D:\C#\DummyFile\mm.csv";
 			FileProcessing.CsvTrans2Json<BaseTitle>(OrderListPath, out loadOrderViewList);
 			FileProcessing.CsvTrans2Json<MemberListTitle>(MemberListPath, out List<MemberListTitle> MemberList);
 
@@ -217,6 +213,8 @@ namespace GoBuyIt
 					if (Order.CustomerName == s.RealName && Order.CustomerEmail == s.Email)
 						Order.Membership = "V";
 				});
+				Order.OwnerName = "方氏果乾";
+				Order.OwnerNumber = "F00001";
 			}
 
 			loadOrderViewList.ForEach(s =>
@@ -249,6 +247,20 @@ namespace GoBuyIt
 			else
 				loadOrderViewList.ForEach(s => { OrderViewList.Add(new OrderView(s)); });
 		
+		}
+
+		public ICommand ExportPDFClickCommand
+		{
+			get { return new DelegateCommand(ExportPDFClick, CanCommand); }
+		}
+
+		private void ExportPDFClick()
+		{
+			
+			ToPdfTools.ExportListPDF(new List<OrderView>(OrderViewList.ToList()));
+			//OrderViewList;
+
+
 		}
 		public ICommand TextChangedEvent
 		{
