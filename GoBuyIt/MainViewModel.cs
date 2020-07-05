@@ -256,8 +256,8 @@ namespace GoBuyIt
 
 		private void ExportPDFClick()
 		{
-			
-			ToPdfTools.ExportListPDF(new List<OrderView>(OrderViewList.ToList()));
+
+			PDFTool.ExportListPDF(new List<OrderView>(OrderViewList.ToList()), @"D:\C#\20200706.pdf");
 			//OrderViewList;
 
 
