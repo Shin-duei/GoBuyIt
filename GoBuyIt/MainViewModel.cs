@@ -206,7 +206,7 @@ namespace GoBuyIt
 
 			OrderViewList.Clear();
 
-			foreach (var Order in loadOrderViewList)
+			loadOrderViewList.ForEach(Order =>
 			{
 				MemberList.ForEach(s =>
 				{
@@ -215,13 +215,20 @@ namespace GoBuyIt
 				});
 				Order.OwnerName = "方氏果乾";
 				Order.OwnerNumber = "F00001";
-			}
+			});
 
+			//篩選統計欄位
 			loadOrderViewList.ForEach(s =>
 			{
-				OrderViewList.Add(new OrderView(s));
-			}
-			);
+				bool IsValidOrderNumber = true;
+
+				s.OrderNumber.ToList().ForEach(ch => {
+					if (!char.IsDigit(ch) && !char.IsLetter(ch))//是否为数字//是否为字母
+						IsValidOrderNumber = false;
+				});
+				if(IsValidOrderNumber)
+					OrderViewList.Add(new OrderView(s));
+			});
 		}
 
 
@@ -254,13 +261,25 @@ namespace GoBuyIt
 			get { return new DelegateCommand(ExportPDFClick, CanCommand); }
 		}
 
+		/// <summary>
+		/// 輸出PDF
+		/// </summary>
 		private void ExportPDFClick()
 		{
+			Dictionary<string, List<OrderView>> IndividualList = new Dictionary<string, List<OrderView>>();
+			
+			OrderViewList.ToList().ForEach(s => {
+				
+				if (IndividualList.ContainsKey(s.OrderNumber))
+					IndividualList[s.OrderNumber].Add(s);
+				else
+					IndividualList.Add(s.OrderNumber, new List<OrderView>() {s});
+			});
 
-			PDFTool.ExportListPDF(new List<OrderView>(OrderViewList.ToList()), @"D:\C#\20200706.pdf");
+			PDFTool.ExportIndividualList(IndividualList,false);
+
+			//PDFTool.ExportListPDF(new List<OrderView>(OrderViewList.ToList()), @"D:\C#\20200706.pdf");
 			//OrderViewList;
-
-
 		}
 		public ICommand TextChangedEvent
 		{

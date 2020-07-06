@@ -97,6 +97,7 @@
                     ItemsSource="{Binding OrderViewList}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding OwnerName}" Header="廠商名稱" />
+                        <DataGridTextColumn Binding="{Binding OwnerNumber}" Header="廠商編號" />
                         <DataGridTextColumn Binding="{Binding OrderNumber}" Header="訂單編號" />
                         <DataGridTextColumn Binding="{Binding DateCreate}" Header="建立日期" />
                         <DataGridTextColumn Binding="{Binding CustomerName}" Header="顧客姓名" />
