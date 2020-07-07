@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SQLite;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -23,10 +24,12 @@ namespace GoBuyIt
         //載入的訂單
         private List<BaseTitle> loadOrderViewList = new List<BaseTitle>();
 
-        //是否為會員
+        //輸入的訂單編號
         private string orderNumber = "";
         //輸入的顧客姓名
         private string customerName = "";
+        //輸入的時間
+        private string orderDate = DateTime.Now.ToString("yyyy/MM/dd");
         //是否為會員
         private bool membership;
 
@@ -201,15 +204,18 @@ namespace GoBuyIt
 
         private void ImportOderClick()
         {
-            //string OrderListPath = @"Order/order_2020_05_16_09_52_57.csv";
-            // string MemberListPath = @"MemberList/方氏果乾會員.csv";
-            string OrderListPath = @"D:\C#\DummyFile\order_2020_05_16_09_52_57.csv";
-            string MemberListPath = @"D:\C#\DummyFile\mm.csv";
+            string OrderListPath = @"Order/order_2020_05_16_09_52_57.csv";
+            string MemberListPath = @"MemberList/方氏果乾會員.csv";
+#if (DEBUG)
+            OrderListPath = Path.Combine(PathFunction.GetExecuteLevelPath(System.Environment.CurrentDirectory, 2), @"DummyFile\order_2020_05_16_09_52_57.csv");
+            MemberListPath = Path.Combine(PathFunction.GetExecuteLevelPath(System.Environment.CurrentDirectory, 2), @"DummyFile\mm.csv");
+#endif
             FileProcessing.CsvTrans2Json<BaseTitle>(OrderListPath, out loadOrderViewList);
             FileProcessing.CsvTrans2Json<MemberListTitle>(MemberListPath, out List<MemberListTitle> MemberList);
 
             OrderViewList.Clear();
 
+            //整理格式
             loadOrderViewList.ForEach(Order =>
             {
                 MemberList.ForEach(s =>
@@ -219,22 +225,16 @@ namespace GoBuyIt
                 });
                 Order.OwnerName = "方氏果乾";
                 Order.OwnerNumber = "F00001";
+
+                if (Order.DateCreate != null)
+                {
+                    CultureInfo CultureInfoDateCulture = new CultureInfo("ja-JP"); //日期文化格式
+                    DateTime d = DateTime.ParseExact(Order.DateCreate, "yyyy-MM-dd hh:mm:ss", CultureInfoDateCulture);
+                    Order.DateCreate = d.ToString("yyyy/MM/dd");
+                }
             });
 
-            ////篩選統計欄位
-            //loadOrderViewList.ForEach(s =>
-            //{
-            //    bool IsValidOrderNumber = true;
-
-            //    s.OrderNumber.ToList().ForEach(ch =>
-            //    {
-            //        if (!char.IsDigit(ch) && !char.IsLetter(ch))//是否为数字//是否为字母
-            //            IsValidOrderNumber = false;
-            //    });
-            //    if (IsValidOrderNumber)
-            //        OrderViewList.Add(new OrderView(s));
-            //});
-
+            //篩選統計欄位
             for (int i = 0; i < loadOrderViewList.Count; i++)
             {
                 bool IsValidOrderNumber = true;
@@ -259,7 +259,9 @@ namespace GoBuyIt
         {
             get { return new DelegateCommand(SearchClick, CanCommand); }
         }
-
+        /// <summary>
+        /// 搜尋訂單內容
+        /// </summary>
         private void SearchClick()
         {
             if (this.orderNumber != "")
@@ -271,9 +273,8 @@ namespace GoBuyIt
                         OrderViewList.Clear();
                         loadOrderViewList.ForEach(s =>
                         {
-                            if (s.Membership == "V" && s.OrderNumber == this.orderNumber && s.CustomerName == this.customerName)
+                            if (s.DateCreate == orderDate && s.Membership == "V" && s.OrderNumber == this.orderNumber && s.CustomerName == this.customerName)
                                 OrderViewList.Add(new OrderView(s));
-
                         });
                     }
                     else
@@ -281,7 +282,7 @@ namespace GoBuyIt
                         OrderViewList.Clear();
                         loadOrderViewList.ForEach(s =>
                         {
-                            if (s.OrderNumber == this.orderNumber && s.CustomerName == this.customerName)
+                            if (s.DateCreate == orderDate && s.OrderNumber == this.orderNumber && s.CustomerName == this.customerName)
                                 OrderViewList.Add(new OrderView(s));
                         });
                     }
@@ -293,9 +294,8 @@ namespace GoBuyIt
                         OrderViewList.Clear();
                         loadOrderViewList.ForEach(s =>
                         {
-                            if (s.Membership == "V" && s.OrderNumber == this.orderNumber)
+                            if (s.DateCreate == orderDate && s.Membership == "V" && s.OrderNumber == this.orderNumber)
                                 OrderViewList.Add(new OrderView(s));
-
                         });
                     }
                     else
@@ -303,7 +303,7 @@ namespace GoBuyIt
                         OrderViewList.Clear();
                         loadOrderViewList.ForEach(s =>
                         {
-                            if (s.OrderNumber == this.orderNumber)
+                            if (s.DateCreate == orderDate && s.OrderNumber == this.orderNumber)
                                 OrderViewList.Add(new OrderView(s));
                         });
                     }
@@ -318,9 +318,8 @@ namespace GoBuyIt
                         OrderViewList.Clear();
                         loadOrderViewList.ForEach(s =>
                         {
-                            if (s.Membership == "V" && s.CustomerName == this.customerName)
+                            if (s.DateCreate == orderDate && s.Membership == "V" && s.CustomerName == this.customerName)
                                 OrderViewList.Add(new OrderView(s));
-
                         });
                     }
                     else
@@ -328,7 +327,7 @@ namespace GoBuyIt
                         OrderViewList.Clear();
                         loadOrderViewList.ForEach(s =>
                         {
-                            if (s.CustomerName == this.customerName)
+                            if (s.DateCreate == orderDate && s.CustomerName == this.customerName)
                                 OrderViewList.Add(new OrderView(s));
                         });
                     }
@@ -340,9 +339,8 @@ namespace GoBuyIt
                         OrderViewList.Clear();
                         loadOrderViewList.ForEach(s =>
                         {
-                            if (s.Membership == "V")
+                            if (s.DateCreate == orderDate && s.Membership == "V")
                                 OrderViewList.Add(new OrderView(s));
-
                         });
                     }
                     else
@@ -350,7 +348,8 @@ namespace GoBuyIt
                         OrderViewList.Clear();
                         loadOrderViewList.ForEach(s =>
                         {
-                            OrderViewList.Add(new OrderView(s));
+                            if (s.DateCreate == orderDate)
+                                OrderViewList.Add(new OrderView(s));
                         });
                     }
                 }
@@ -405,6 +404,21 @@ namespace GoBuyIt
         {
             TextBox tb = parameter as TextBox;
             this.orderNumber = tb.Text;
+        }
+
+        /// <summary>
+        /// 日期搜尋欄位輸入
+        /// </summary>
+        public ICommand DateChangedEvent
+        {
+            get { return new RelayCommand(TextDateChanged, RelayCommand.CanExecuteMethod); }
+        }
+        private void TextDateChanged(object parameter)
+        {
+            DatePicker dp = parameter as DatePicker;
+
+            if (dp.SelectedDate.HasValue)
+                this.orderDate = dp.SelectedDate.Value.ToString("yyyy/MM/dd");
         }
 
         public ICommand CheckBoxEvent

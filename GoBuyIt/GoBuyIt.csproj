@@ -208,6 +208,9 @@
   <ItemGroup>
     <Resource Include="Logo.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DummyFile\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

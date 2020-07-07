@@ -7,6 +7,7 @@
     xmlns:local="clr-namespace:GoBuyIt"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
     Title="Order Manager"
     Width="1000"
     Height="600"
@@ -154,10 +155,38 @@
                         </ie:EventTrigger>
                     </ie:Interaction.Triggers>
                 </TextBox>
+                <Label
+                    x:Name="labelOrderDate"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Content="訂單日期: " />
+                <DatePicker
+                    x:Name="OrderDatePicker"
+                    Height="23"
+                    Margin="0,0,0,27.4"
+                    SelectedDate="{x:Static sys:DateTime.Now}">
+                    <DatePicker.Resources>
+                        <Style TargetType="{x:Type DatePickerTextBox}">
+                            <Setter Property="Control.Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <TextBox x:Name="DateTextBox" Text="{Binding Path=SelectedDate, RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}, StringFormat='yyyy/MM/dd'}" />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DatePicker.Resources>
+                    <ie:Interaction.Triggers>
+                        <ie:EventTrigger EventName="SelectedDateChanged">
+                            <ie:InvokeCommandAction Command="{Binding DateChangedEvent}" CommandParameter="{Binding ElementName=OrderDatePicker}" />
+                        </ie:EventTrigger>
+                    </ie:Interaction.Triggers>
+                </DatePicker>
                 <CheckBox
                     x:Name="checkBoxMemberShip"
                     Width="51"
-                    Height="23"
+                    Height="27"
+                    Margin="20,0,0,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Content="會員">
@@ -171,7 +200,7 @@
             <StackPanel
                 Grid.Row="1"
                 Grid.Column="0"
-                Grid.ColumnSpan="6"
+                Grid.ColumnSpan="3"
                 Background="white"
                 Orientation="Horizontal">
                 <Button
