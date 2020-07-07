@@ -7,9 +7,10 @@
     xmlns:local="clr-namespace:GoBuyIt"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
-    Title="SQliteTest"
+    Title="Order Manager"
     Width="1000"
     Height="600"
+    Icon="Logo.ico"
     mc:Ignorable="d">
     <Window.Resources>
         <ResourceDictionary>
@@ -67,7 +68,7 @@
     <Window.DataContext>
         <local:MainViewModel />
     </Window.DataContext>
-    <Viewbox x:Name="RootViewbox" Stretch="Fill">
+    <Viewbox x:Name="RootViewbox" Stretch="UniformToFill">
         <Grid x:Name="AppTitleBar" Background="White">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="166" />
@@ -127,7 +128,13 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Text=""
-                    TextWrapping="Wrap" />
+                    TextWrapping="Wrap">
+                    <ie:Interaction.Triggers>
+                        <ie:EventTrigger EventName="TextChanged">
+                            <ie:InvokeCommandAction Command="{Binding TextOrderNoChangedEvent}" CommandParameter="{Binding ElementName=TextOrderNo}" />
+                        </ie:EventTrigger>
+                    </ie:Interaction.Triggers>
+                </TextBox>
                 <Label
                     x:Name="labelCustName"
                     HorizontalAlignment="Left"
@@ -143,7 +150,7 @@
                     TextWrapping="Wrap">
                     <ie:Interaction.Triggers>
                         <ie:EventTrigger EventName="TextChanged">
-                            <ie:InvokeCommandAction Command="{Binding TextChangedEvent}" CommandParameter="{Binding ElementName=TextCustomerName}" />
+                            <ie:InvokeCommandAction Command="{Binding TextCustomerNameChangedEvent}" CommandParameter="{Binding ElementName=TextCustomerName}" />
                         </ie:EventTrigger>
                     </ie:Interaction.Triggers>
                 </TextBox>

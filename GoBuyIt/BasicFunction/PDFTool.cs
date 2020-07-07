@@ -120,7 +120,7 @@ namespace GoBuyIt.BasicFunction
                 Table subItemTable = new Table(1, true);
 
                 Cell cell13 = new Cell(1, 1)
-                    .SetTextAlignment(TextAlignment.RIGHT)
+                    .SetTextAlignment(TextAlignment.CENTER)
                     .SetBorder(Border.NO_BORDER)
                     .Add(new Paragraph($"列印日期: {PrintDate}")
                     .SetFont(subItemfont).SetFontSize(subItemfontSize));
