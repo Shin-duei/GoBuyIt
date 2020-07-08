@@ -264,96 +264,7 @@ namespace GoBuyIt
         /// </summary>
         private void SearchClick()
         {
-            if (this.orderNumber != "")
-            {
-                if (this.customerName != "")
-                {
-                    if (this.membership)
-                    {
-                        OrderViewList.Clear();
-                        loadOrderViewList.ForEach(s =>
-                        {
-                            if (s.DateCreate == orderDate && s.Membership == "V" && s.OrderNumber == this.orderNumber && s.CustomerName == this.customerName)
-                                OrderViewList.Add(new OrderView(s));
-                        });
-                    }
-                    else
-                    {
-                        OrderViewList.Clear();
-                        loadOrderViewList.ForEach(s =>
-                        {
-                            if (s.DateCreate == orderDate && s.OrderNumber == this.orderNumber && s.CustomerName == this.customerName)
-                                OrderViewList.Add(new OrderView(s));
-                        });
-                    }
-                }
-                else
-                {
-                    if (this.membership)
-                    {
-                        OrderViewList.Clear();
-                        loadOrderViewList.ForEach(s =>
-                        {
-                            if (s.DateCreate == orderDate && s.Membership == "V" && s.OrderNumber == this.orderNumber)
-                                OrderViewList.Add(new OrderView(s));
-                        });
-                    }
-                    else
-                    {
-                        OrderViewList.Clear();
-                        loadOrderViewList.ForEach(s =>
-                        {
-                            if (s.DateCreate == orderDate && s.OrderNumber == this.orderNumber)
-                                OrderViewList.Add(new OrderView(s));
-                        });
-                    }
-                }
-            }
-            else
-            {
-                if (this.customerName != "")
-                {
-                    if (this.membership)
-                    {
-                        OrderViewList.Clear();
-                        loadOrderViewList.ForEach(s =>
-                        {
-                            if (s.DateCreate == orderDate && s.Membership == "V" && s.CustomerName == this.customerName)
-                                OrderViewList.Add(new OrderView(s));
-                        });
-                    }
-                    else
-                    {
-                        OrderViewList.Clear();
-                        loadOrderViewList.ForEach(s =>
-                        {
-                            if (s.DateCreate == orderDate && s.CustomerName == this.customerName)
-                                OrderViewList.Add(new OrderView(s));
-                        });
-                    }
-                }
-                else
-                {
-                    if (this.membership)
-                    {
-                        OrderViewList.Clear();
-                        loadOrderViewList.ForEach(s =>
-                        {
-                            if (s.DateCreate == orderDate && s.Membership == "V")
-                                OrderViewList.Add(new OrderView(s));
-                        });
-                    }
-                    else
-                    {
-                        OrderViewList.Clear();
-                        loadOrderViewList.ForEach(s =>
-                        {
-                            if (s.DateCreate == orderDate)
-                                OrderViewList.Add(new OrderView(s));
-                        });
-                    }
-                }
-            }
+            RefreashDataViewList();
         }
 
         public ICommand ExportPDFClickCommand
@@ -391,6 +302,8 @@ namespace GoBuyIt
         {
             TextBox tb = parameter as TextBox;
             this.customerName = tb.Text;
+
+            RefreashDataViewList();
         }
 
         /// <summary>
@@ -404,6 +317,8 @@ namespace GoBuyIt
         {
             TextBox tb = parameter as TextBox;
             this.orderNumber = tb.Text;
+
+            RefreashDataViewList();
         }
 
         /// <summary>
@@ -419,6 +334,8 @@ namespace GoBuyIt
 
             if (dp.SelectedDate.HasValue)
                 this.orderDate = dp.SelectedDate.Value.ToString("yyyy/MM/dd");
+
+            RefreashDataViewList();
         }
 
         public ICommand CheckBoxEvent
@@ -433,7 +350,29 @@ namespace GoBuyIt
             else
                 this.membership = false;
 
+            RefreashDataViewList();
         }
+        /// <summary>
+        /// 刷新顯示表
+        /// </summary>
+        private void RefreashDataViewList()
+        {
+            OrderViewList.Clear();
+            loadOrderViewList.ForEach(s =>
+            {
+                if (this.membership)
+                {
+                    if (s.Membership == "V" && s.DateCreate.Contains(this.orderDate) && s.OrderNumber.Contains(this.orderNumber) && s.CustomerName.Contains(this.customerName) && s.DateCreate.Contains(this.orderDate))
+                        OrderViewList.Add(new OrderView(s));
+                }
+                else
+                {
+                    if (s.DateCreate.Contains(this.orderDate) && s.OrderNumber.Contains(this.orderNumber) && s.CustomerName.Contains(this.customerName) && s.DateCreate.Contains(this.orderDate))
+                        OrderViewList.Add(new OrderView(s));
+                }
+            });
+        }
+
         private bool CanCommand()
         {
             return true;
