@@ -10,7 +10,7 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     Title="Order Manager"
     Width="1000"
-    Height="600"
+    Height="628.8"
     Icon="Logo.ico"
     mc:Ignorable="d">
     <Window.Resources>
@@ -125,7 +125,7 @@
                 <TextBox
                     x:Name="TextOrderNo"
                     Width="120"
-                    Height="23"
+                    Height="29"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Text=""
@@ -144,7 +144,7 @@
                 <TextBox
                     x:Name="TextCustomerName"
                     Width="120"
-                    Height="23"
+                    Height="29"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Text=""
