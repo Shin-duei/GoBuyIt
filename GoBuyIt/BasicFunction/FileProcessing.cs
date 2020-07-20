@@ -1,7 +1,4 @@
-﻿using GoBuyIt.Model;
-using Newtonsoft.Json;
-using ServiceStack;
-using System;
+﻿using ServiceStack;
 using System.Collections.Generic;
 using System.IO;
 

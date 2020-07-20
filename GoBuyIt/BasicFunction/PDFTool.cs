@@ -10,12 +10,9 @@ using iText.Layout.Element;
 using iText.Layout.Properties;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GoBuyIt.BasicFunction
 {
@@ -56,26 +53,25 @@ namespace GoBuyIt.BasicFunction
        
             // Title
             string Title = "撿貨單";
-            PdfFont Titlefont = PdfFontFactory.CreateFont(@"C:\windows\fonts\msjh.ttc,0", PdfEncodings.IDENTITY_H, false);
+            PdfFont Titlefont = PdfFontFactory.CreateFont(@"C:\windows\fonts\msjhbd.ttc,0", PdfEncodings.IDENTITY_H, false);
             int TitlefontSize = 20;
             Paragraph header = new Paragraph($"{Title}")
                .SetTextAlignment(TextAlignment.CENTER)
                .SetUnderline()
                .SetFont(Titlefont).SetFontSize(TitlefontSize);
             document.Add(header);
-
+            
+            //subItemTable
             PdfFont subItemfont = PdfFontFactory.CreateFont(@"C:\windows\fonts\msjh.ttc,0", PdfEncodings.IDENTITY_H, false);
             int subItemfontSize = 12;
 
-
-            Table subItemTable = new Table(3, true);
+            Table subItemTable = new Table(1, true);
 
             Cell cell13 = new Cell(1, 1)
                 .SetTextAlignment(TextAlignment.RIGHT)
                 .SetBorder(Border.NO_BORDER)
                 .Add(new Paragraph($"列印日期: {PrintDate}")
                 .SetFont(subItemfont).SetFontSize(subItemfontSize));
-
             subItemTable.AddCell(cell13);
 
             document.Add(subItemTable);
@@ -105,7 +101,7 @@ namespace GoBuyIt.BasicFunction
             {
                                   
                 // Title
-                PdfFont Titlefont = PdfFontFactory.CreateFont(@"C:\windows\fonts\msjh.ttc,0", PdfEncodings.IDENTITY_H, false);
+                PdfFont Titlefont = PdfFontFactory.CreateFont(@"C:\windows\fonts\msjhbd.ttc,0", PdfEncodings.IDENTITY_H, false);
                 int TitlefontSize = 20;
                 Paragraph header = new Paragraph($"撿貨單")
                    .SetTextAlignment(TextAlignment.CENTER)
@@ -120,7 +116,7 @@ namespace GoBuyIt.BasicFunction
                 Table subItemTable = new Table(1, true);
 
                 Cell cell13 = new Cell(1, 1)
-                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetTextAlignment(TextAlignment.RIGHT)
                     .SetBorder(Border.NO_BORDER)
                     .Add(new Paragraph($"列印日期: {PrintDate}")
                     .SetFont(subItemfont).SetFontSize(subItemfontSize));
@@ -156,7 +152,7 @@ namespace GoBuyIt.BasicFunction
 
             //设置Pdf表格Header
             Table table = new Table(props.Length, false);
-            PdfFont HeadFont = PdfFontFactory.CreateFont(@"C:\windows\fonts\msjh.ttc,0", PdfEncodings.IDENTITY_H, false);
+            PdfFont HeadFont = PdfFontFactory.CreateFont(@"C:\windows\fonts\msjhbd.ttc,0", PdfEncodings.IDENTITY_H, false);
 
             props.ToList().ForEach(p =>
             {
@@ -167,8 +163,11 @@ namespace GoBuyIt.BasicFunction
                 .SetFont(HeadFont).SetFontSize(12)
                 .Add(new Paragraph(HeaderText));
 
+                //調整欄位寬度
                 if (HeaderText == "會員")
-                    CellHeader.SetWidth(5);
+                    CellHeader.SetWidth(30);
+                else
+                    CellHeader.SetWidth(90);
 
                 table.AddCell(CellHeader);
             });
@@ -179,7 +178,7 @@ namespace GoBuyIt.BasicFunction
                 props.ToList().ForEach(prop =>
                 {
                     Cell CellHeader = new Cell(1, 1)
-                    .SetTextAlignment(TextAlignment.RIGHT)
+                    .SetTextAlignment(TextAlignment.CENTER)
                     .SetBorder(Border.NO_BORDER)
                     .SetFont(HeadFont).SetFontSize(10)
                     .Add(new Paragraph(GetValue(item, prop.Name)));

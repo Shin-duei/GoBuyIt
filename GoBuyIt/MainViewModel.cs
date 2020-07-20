@@ -254,19 +254,6 @@ namespace GoBuyIt
             }
         }
 
-
-        public ICommand SearchClickCommand
-        {
-            get { return new DelegateCommand(SearchClick, CanCommand); }
-        }
-        /// <summary>
-        /// 搜尋訂單內容
-        /// </summary>
-        private void SearchClick()
-        {
-            RefreashDataViewList();
-        }
-
         public ICommand ExportPDFClickCommand
         {
             get { return new DelegateCommand(ExportPDFClick, CanCommand); }
