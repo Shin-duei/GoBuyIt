@@ -153,7 +153,11 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BasicFunction\DataAccess.cs" />
+    <Compile Include="BasicFunction\LicenseCheck.cs" />
     <Compile Include="BasicFunction\PDFTool.cs" />
+    <Compile Include="Model\Config.cs" />
+    <Compile Include="Model\LicenseContent.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ViewModel\DelegateCommand.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
@@ -206,6 +210,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DummyFile\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LicenseManager\LicenseManager.csproj">
+      <Project>{B8B248BD-8CD5-4D53-BBD9-4954F99C6134}</Project>
+      <Name>LicenseManager</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

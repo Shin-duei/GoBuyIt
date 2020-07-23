@@ -19,8 +19,19 @@ namespace GoBuyIt
     {
         public MainViewModel()
         {
+            new DataAccess();
 
+            if (!LicenseCheck.IsLicenseValidation(DataAccess.LicenseDirectory))
+            {
+                MessageBox.Show("授權到期","提示");
+                System.Environment.Exit(0);
+            }
+
+            LicensePageContent();
         }
+
+        private static string dateForm = "yyyy/MM/dd";
+
         //載入的訂單
         private List<BaseTitle> loadOrderViewList = new List<BaseTitle>();
 
@@ -29,18 +40,38 @@ namespace GoBuyIt
         //輸入的顧客姓名
         private string customerName = "";
         //輸入的時間
-        private string orderDate = DateTime.Now.ToString("yyyy/MM/dd");
+        private string orderDate = DateTime.Now.ToString(dateForm);
         //是否為會員
         private bool membership;
 
 
+        /// <summary>
+        /// 授權資訊頁面
+        /// </summary>
+        public string LicenseContent
+        {
+            get { return licenseContent; }
+            set { licenseContent = value; OnPropertyChanged(); }
+        }
+        private string licenseContent;
 
-        private ObservableCollection<OrderView> orderViewList = new ObservableCollection<OrderView>();
+        private void LicensePageContent()
+        {
+            licenseContent = $"授權開始日期: {LicenseCheck.DateFrom.ToString(dateForm)}" + "\r\n" +
+                                    $"授權終止日期: {LicenseCheck.DateEnd.ToString(dateForm)}" + "\r\n" +
+                                    $"授權可用天數: {LicenseCheck.AvailabeTime} 天";
+        }
+
+
+        /// <summary>
+        /// 顯示出來的訂單列表
+        /// </summary>
         public ObservableCollection<OrderView> OrderViewList
         {
             get { return orderViewList; }
             set { orderViewList = value; OnPropertyChanged(); }
         }
+        private ObservableCollection<OrderView> orderViewList = new ObservableCollection<OrderView>();
 
         SQLiteConnection SQLite_Connection;
         SQLiteCommand SQLite_Command;
@@ -202,21 +233,38 @@ namespace GoBuyIt
             get { return new DelegateCommand(ImportOderClick, CanCommand); }
         }
 
+        /// <summary>
+        /// 載入資料
+        /// </summary>
         private void ImportOderClick()
         {
-            string OrderListPath = @"Order/order_2020_05_16_09_52_57.csv";
-            string MemberListPath = @"MemberList/方氏果乾會員.csv";
-#if (DEBUG)
-            OrderListPath = Path.Combine(PathFunction.GetExecuteLevelPath(System.Environment.CurrentDirectory, 2), @"DummyFile\order_2020_05_16_09_52_57.csv");
-            MemberListPath = Path.Combine(PathFunction.GetExecuteLevelPath(System.Environment.CurrentDirectory, 2), @"DummyFile\mm.csv");
-#endif
-            FileProcessing.CsvTrans2Json<BaseTitle>(OrderListPath, out loadOrderViewList);
-            FileProcessing.CsvTrans2Json<MemberListTitle>(MemberListPath, out List<MemberListTitle> MemberList);
+
+            var OderCSVList = Directory.GetFiles(DataAccess.OrderListDirectoryPath, "*.csv");
 
             OrderViewList.Clear();
 
+            //載入所有CSV檔
+            OderCSVList.ToList().ForEach(OderCSV =>
+            {
+                loadOrderViewList.AddRange(LoadData(OderCSV, DataAccess.MemberListFilePath));
+            });
+            MessageBox.Show("載入完成", "提示");
+
+            RefreashDataViewList();
+        }
+        /// <summary>
+        /// 每個訂單CSV載入
+        /// </summary>
+        /// <param name="OrderListPath"></param>
+        /// <param name="MemberListPath"></param>
+        /// <returns></returns>
+        private List<BaseTitle> LoadData(string OrderListPath, string MemberListPath)
+        {
+            FileProcessing.CsvTrans2Json<BaseTitle>(OrderListPath, out List<BaseTitle> newList);
+            FileProcessing.CsvTrans2Json<MemberListTitle>(MemberListPath, out List<MemberListTitle> MemberList);
+
             //整理格式
-            loadOrderViewList.ForEach(Order =>
+            newList.ForEach(Order =>
             {
                 MemberList.ForEach(s =>
                 {
@@ -229,29 +277,29 @@ namespace GoBuyIt
                 if (Order.DateCreate != null)
                 {
                     CultureInfo CultureInfoDateCulture = new CultureInfo("ja-JP"); //日期文化格式
+
                     DateTime d = DateTime.ParseExact(Order.DateCreate, "yyyy-MM-dd hh:mm:ss", CultureInfoDateCulture);
-                    Order.DateCreate = d.ToString("yyyy/MM/dd");
+                    Order.DateCreate = d.ToString(dateForm);
                 }
             });
 
             //篩選統計欄位
-            for (int i = 0; i < loadOrderViewList.Count; i++)
+            for (int i = 0; i < newList.Count; i++)
             {
                 bool IsValidOrderNumber = true;
 
-                loadOrderViewList[i].OrderNumber.ToList().ForEach(ch =>
+                newList[i].OrderNumber.ToList().ForEach(ch =>
                 {
                     if (!char.IsDigit(ch) && !char.IsLetter(ch))//是否为数字//是否为字母
                         IsValidOrderNumber = false;
                 });
                 if (!IsValidOrderNumber)
                 {
-                    loadOrderViewList.Remove(loadOrderViewList[i]);
+                    newList.Remove(newList[i]);
                     i--;
                 }
-                else
-                    OrderViewList.Add(new OrderView(loadOrderViewList[i]));
             }
+            return newList;
         }
 
         public ICommand ExportPDFClickCommand
@@ -275,8 +323,22 @@ namespace GoBuyIt
                     IndividualList.Add(s.OrderNumber, new List<OrderView>() { s });
             });
 
-            PDFTool.ExportIndividualList(IndividualList, false);
+            System.Windows.Forms.DialogResult myResult = System.Windows.Forms.MessageBox.Show("是否輸出成單一檔案?"
+                , "輸出模式"
+                ,System.Windows.Forms.MessageBoxButtons.YesNo
+                , System.Windows.Forms.MessageBoxIcon.Question);
 
+            if (myResult == System.Windows.Forms.DialogResult.Yes)
+            {
+                PDFTool.ExportIndividualList(IndividualList, false);
+                MessageBox.Show("匯出PDF完成", "提示");
+            }
+            else if (myResult == System.Windows.Forms.DialogResult.No)
+            {
+                PDFTool.ExportIndividualList(IndividualList, true);
+                MessageBox.Show("匯出PDF完成", "提示");
+            }
+    
         }
         /// <summary>
         /// 搜尋顧客名稱欄位輸入
@@ -320,11 +382,14 @@ namespace GoBuyIt
             DatePicker dp = parameter as DatePicker;
 
             if (dp.SelectedDate.HasValue)
-                this.orderDate = dp.SelectedDate.Value.ToString("yyyy/MM/dd");
+                this.orderDate = dp.SelectedDate.Value.ToString(dateForm);
 
             RefreashDataViewList();
         }
-
+        
+        /// <summary>
+        /// 點擊會員核取方塊事件
+        /// </summary>
         public ICommand CheckBoxEvent
         {
             get { return new RelayCommand(CheckBoxChanged, RelayCommand.CanExecuteMethod); }
@@ -339,6 +404,7 @@ namespace GoBuyIt
 
             RefreashDataViewList();
         }
+
         /// <summary>
         /// 刷新顯示表
         /// </summary>

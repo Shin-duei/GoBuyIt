@@ -13,5 +13,6 @@ namespace GoBuyIt
         {
             new Application().Run(new GoBuyItLogistics());
         }
+
     }
 }
