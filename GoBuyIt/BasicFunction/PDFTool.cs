@@ -104,6 +104,7 @@ namespace GoBuyIt.BasicFunction
             CreatePicture(System.IO.Path.Combine(DataAccess.LogisticsDirectoryPath, $"{orderNumber}{DataAccess.LogisticsFileNameExtensionType}"), document);
 
             document.Close();
+            writer.Close();
         }
 
         /// <summary>
@@ -169,6 +170,7 @@ namespace GoBuyIt.BasicFunction
             pdf.RemovePage(pdf.GetNumberOfPages());
             //pdf.RemovePage(individualList.Keys.Count + 1);
             document.Close();
+            writer.Close();
         }
 
         /// <summary>
@@ -224,7 +226,7 @@ namespace GoBuyIt.BasicFunction
         }
 
         /// <summary>
-        /// 插入圖片
+        /// 插入圖片(物流單)
         /// </summary>
         /// <param name="document"></param>
         private static void CreatePicture(string photoPath, Document document)

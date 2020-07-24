@@ -12,8 +12,9 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     Title="Order Manager"
     Width="1000"
-    Height="787"
-    Icon="Logo.ico"
+    Height="679"
+    TitleAlignment="Center"
+    TitleForeground="AliceBlue"
     mc:Ignorable="d">
     <Window.Resources>
         <ResourceDictionary>
@@ -33,6 +34,10 @@
                 <!--  設定輔色  -->
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Red.xaml" />
 
+                <!--  加入與 MahApps 相容的相關資源  -->
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Flyout.xaml" />
+
                 <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/MaterialDesign.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <!--  加入筆刷資源  -->
@@ -41,7 +46,7 @@
             <SolidColorBrush x:Key="AccentColorBrush2" Color="{DynamicResource Primary400}" />
             <SolidColorBrush x:Key="AccentColorBrush3" Color="{DynamicResource Primary300}" />
             <SolidColorBrush x:Key="AccentColorBrush4" Color="{DynamicResource Primary200}" />
-            <SolidColorBrush x:Key="WindowTitleColorBrush" Color="{DynamicResource Primary700}" />
+            <SolidColorBrush x:Key="WindowTitleColorBrush" Color="{DynamicResource GrayHover}" />
             <SolidColorBrush x:Key="AccentSelectedColorBrush" Color="{DynamicResource Primary500Foreground}" />
             <LinearGradientBrush x:Key="ProgressBrush" StartPoint="1.002,0.5" EndPoint="0.001,0.5">
                 <GradientStop Offset="0" Color="{DynamicResource Primary700}" />
@@ -58,6 +63,19 @@
                 <Setter Property="FontSize" Value="18" />
                 <Setter Property="VerticalAlignment" Value="Center" />
                 <Setter Property="FontWeight" Value="Bold" />
+            </Style>
+            <Style x:Key="Body_Content_DataGrid_Centering" TargetType="{x:Type DataGridCell}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type DataGridCell}">
+                            <Grid Background="{TemplateBinding Background}">
+                                <ContentPresenter VerticalAlignment="Center" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                <Setter Property="TextBlock.Height" Value="40" />
             </Style>
             <Style TargetType="Label">
                 <Setter Property="FontSize" Value="14" />
@@ -257,9 +275,16 @@
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch"
                                 AutoGenerateColumns="false"
+                                CellStyle="{StaticResource Body_Content_DataGrid_Centering}"
                                 DockPanel.Dock="Top"
                                 FrozenColumnCount="1"
                                 ItemsSource="{Binding OrderViewList}">
+                                <!--<DataGrid.CellStyle>
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                                        <Setter Property="TextBlock.Height" Value="40" />
+                                    </Style>
+                                </DataGrid.CellStyle>-->
                                 <DataGrid.Columns>
                                     <DataGridTextColumn
                                         Width="Auto"
@@ -318,7 +343,7 @@
                         <TextBlock
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Text="Company Text" />
+                            Text="開發中...." />
                     </DockPanel>
                 </TabItem>
                 <TabItem Selector.IsSelected="{Binding LicensePageClick}" ToolTip="檢視授權資訊">
