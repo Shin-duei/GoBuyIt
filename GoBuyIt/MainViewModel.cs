@@ -21,9 +21,9 @@ namespace GoBuyIt
         {
             new DataAccess();
 
-            if (!LicenseCheck.IsLicenseValidation(DataAccess.LicenseDirectory))
+            if (!LicenseCheck.IsLicenseValidation(DataAccess.LicenseDirectory,out string errorMessage))
             {
-                MessageBox.Show("授權到期","提示");
+                MessageBox.Show(errorMessage, "提示");
                 System.Environment.Exit(0);
             }
 
@@ -77,7 +77,8 @@ namespace GoBuyIt
         SQLiteCommand SQLite_Command;
         SQLiteDataReader SQLite_Reader;
 
-        string DataBasePath = Path.Combine(PathFunction.GetExecuteLevelPath(System.Environment.CurrentDirectory, 2), @"DataBase\GoBuyIt.db");
+        //string DataBasePath = Path.Combine(PathFunction.GetExecuteLevelPath(System.Environment.CurrentDirectory, 2), @"DataBase\GoBuyIt.db");
+        string DataBasePath = "";
         DataTable dt = new DataTable();
 
         private void Button_Click(object sender, RoutedEventArgs e)

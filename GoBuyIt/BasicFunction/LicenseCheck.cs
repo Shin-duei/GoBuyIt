@@ -1,5 +1,4 @@
 ﻿using GoBuyIt.Model;
-using LicenseManager;
 using Newtonsoft.Json;
 using System;
 using System.Globalization;
@@ -28,9 +27,21 @@ namespace GoBuyIt.BasicFunction
         /// </summary>
         /// <param name="licenseDirectoryPath"></param>
         /// <returns></returns>
-        public static bool IsLicenseValidation(string licenseDirectoryPath)
+        public static bool IsLicenseValidation(string licenseDirectoryPath,out string errorMessage)
         {
-            var DecryptJson = LicenseKit.Decrypt(licenseDirectoryPath);
+            string DecryptJson = null;
+            errorMessage = "";
+
+            try
+            {
+               DecryptJson = DecryptKit.Decrypt(licenseDirectoryPath);
+            }
+            catch (Exception)
+            {
+                errorMessage = "授權解析失敗";
+                return false;
+            }
+           
 
             if (DecryptJson != null)
             {
@@ -42,13 +53,20 @@ namespace GoBuyIt.BasicFunction
                 DateEnd = DateTime.ParseExact(licenseContent.DateEnd, "yyyy/MM/dd", CultureInfoDateCulture);
                 AvailabeTime = CalculateDate(DateEnd);
 
-                if(AvailabeTime<0)
+                if (AvailabeTime < 0)
+                {
+                    errorMessage = "授權到期";
                     return false;
+                } 
                 else
                     return true;
             }
             else
+            {
+                errorMessage = "授權解析失敗";
                 return false;
+            }
+                
         }
 
         /// <summary>

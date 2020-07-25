@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
 
 namespace GoBuyIt.Model
 {
@@ -15,7 +14,8 @@ namespace GoBuyIt.Model
         /// <summary>
         /// 主鍵
         /// </summary>
-        [DataMember(Name = "主鍵")]
+        [
+            DataMember(Name = "主鍵")]
         [JsonProperty(PropertyName = "主鍵")]
         public int MainKey { set; get; }
 

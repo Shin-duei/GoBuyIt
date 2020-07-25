@@ -13,7 +13,7 @@
     Title="Order Manager"
     Width="1000"
     Height="679"
-    TitleAlignment="Center"
+    Icon="Logo.ico"
     TitleForeground="AliceBlue"
     mc:Ignorable="d">
     <Window.Resources>
